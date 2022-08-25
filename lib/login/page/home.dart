@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'login.dart';
-import 'package:xeersoft_erp/model/user_data.dart';
+import 'package:xeersoft_erp/login/model/user_data.dart';
 
 class HomePage extends StatelessWidget {
   final UserData user;

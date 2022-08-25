@@ -1,10 +1,7 @@
 
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 UserData userDataFromJson(String str) => UserData.fromJson(json.decode(str));
-
 String userDataToJson(UserData data) => json.encode(data.toJson());
-
 class UserData {
     UserData({
         required this.result,
@@ -39,26 +36,4 @@ class UserData {
         "accessToken": accessToken,
         "refreshToken": refreshToken,
     };
-}
-
-Future<String> readLocalData() async {
-  final prefs = await SharedPreferences.getInstance();
-  const key = 'my_token';
-  final value = prefs.getString(key) ?? "";
-  print('read: $value');
-  return value;
-}
-
-saveToLocalData(String token) async {
-  final prefs = await SharedPreferences.getInstance();
-  const key = 'my_token';
-  final value = token;
-  prefs.setString(key, value);
-  print('saved $value');
-}
-
-clearLocalData() async {
-  final prefs = await SharedPreferences.getInstance();
-  const key = 'my_token';
-  prefs.remove(key);
 }

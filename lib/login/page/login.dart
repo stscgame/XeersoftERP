@@ -1,10 +1,10 @@
 // ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
-import 'package:xeersoft_erp/page/home.dart';
-import 'package:xeersoft_erp/service/api_service.dart';
-import 'package:xeersoft_erp/widgets/dialog_custom.dart';
-import 'package:xeersoft_erp/model/user_data.dart';
-
+import 'package:xeersoft_erp/login/page/home.dart';
+import 'package:xeersoft_erp/login/service/login_service.dart';
+import 'package:xeersoft_erp/login/widgets/dialog_custom.dart';
+// import 'package:xeersoft_erp/login/model/user_data.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -19,6 +19,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    var assetsImage = const AssetImage(
+        'assets/images/ERPicon.png'); //<- Creates an object that fetches an image.
+    var image = Image(image: assetsImage, fit: BoxFit.cover);
     return Scaffold(
       body: Center(
         child: Container(
@@ -27,6 +30,7 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              image,
               const Text(
                 "XEERSOFT ERP",
                 style: TextStyle(fontSize: 40),
@@ -47,9 +51,12 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(20),
-                        child: TextField(
+                        child: TextFormField(
                           controller: emailController,
-                          decoration: const InputDecoration(hintText: "Email"),
+                          decoration: const InputDecoration(
+                            border: UnderlineInputBorder(),
+                            labelText: 'USERNAME',
+                          ),
                         ),
                       ),
                       const SizedBox(
@@ -57,10 +64,13 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(20),
-                        child: TextField(
+                        child: TextFormField(
                           controller: passController,
                           obscureText: true,
-                          decoration: const InputDecoration(hintText: "Password"),
+                          decoration: const InputDecoration(
+                            border: UnderlineInputBorder(),
+                            labelText: 'PASSWORD',
+                          ),
                         ),
                       )
                     ],
@@ -74,7 +84,7 @@ class _LoginPageState extends State<LoginPage> {
                 height: 60,
                 width: MediaQuery.of(context).size.width,
                 child: RaisedButton(
-                  color: Colors.lightBlueAccent,
+                  color: Colors.black,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20)),
                   child: const Text(
@@ -82,28 +92,27 @@ class _LoginPageState extends State<LoginPage> {
                     style: TextStyle(fontSize: 32, color: Colors.white),
                   ),
                   onPressed: () {
-                      final checkUserIsNull = checkTextFiledUser(
-                      emailController.text, passController.text);
-                  checkUserIsNull.then((statusCheckFiled) {
-                    if (statusCheckFiled == true) {
-                      final dataUser = doLogin(
-                          emailController.text, passController.text);
-                      dataUser.then((user) {
-                        saveToLocalData(user.accessToken);
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => HomePage(
-                              user: user
+                    final checkUserIsNull = checkTextFiledUser(
+                        emailController.text, passController.text);
+                    checkUserIsNull.then((statusCheckFiled) {
+                      if (statusCheckFiled == true) {
+                        UserLogin()
+                            .doLogin(emailController.text, passController.text)
+                            .then((user) {
+                          UserLogin().saveToLocalData(user.accessToken);
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  HomePage(user: user),
                             ),
-                          ),
-                          (route) => false,
-                        );
-                      }).catchError((error) {
-                        showAlertDialog(context, "Login Fail", "");
-                      });
-                    }
-                  });
+                            (route) => false,
+                          );
+                        }).catchError((error) {
+                          showAlertDialog(context, "Login Fail", "");
+                        });
+                      }
+                    });
                   },
                 ),
               ),
@@ -111,10 +120,15 @@ class _LoginPageState extends State<LoginPage> {
                 height: 20,
               ),
               FlatButton(
-                child: const Text('Forgot password'),
+                child: const Text('FORGOT PASSWORD?Click'),
                 onPressed: () {},
               ),
+              const Text(
+                "Version 1.0",
+                style: TextStyle(fontSize: 12),
+              ),
             ],
+              
           ),
         ),
       ),

@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:xeersoft_erp/page/home.dart';
-import 'package:xeersoft_erp/service/api_service.dart';
-import 'page/login.dart';
-
-import 'package:xeersoft_erp/model/user_data.dart';
-
+import 'package:xeersoft_erp/login/page/home.dart';
+import 'package:xeersoft_erp/login/service/login_service.dart';
+import 'login/page/login.dart';
 void main() {
   runApp(const MaterialApp(
     title: 'Navigation Basics',
@@ -17,10 +14,9 @@ class LanchPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   final readData = readLocalData();
-   readData.then((token) {
+   UserLogin().readLocalData().then((token) {
      if (token != "") {
-       final autoLoginHandle = autoLogin(token, "");
+       final autoLoginHandle = UserLogin().autoLogin(token, "");
        autoLoginHandle.then((user) {
          // ignore: unnecessary_null_comparison
          if (user.userId != null) {
